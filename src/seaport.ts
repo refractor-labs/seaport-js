@@ -334,9 +334,7 @@ export class Seaport {
     }: CreateOrderInput,
     offererAddress: string,
     accountAddress?: string
-  ): Promise<
-    OrderUseCase<CreateOrderAction> & { orderParameters: OrderWithCounter }
-  > {
+  ): Promise<OrderUseCase<CreateOrderAction>> {
     const signer = await this.provider.getSigner(accountAddress);
     const offerer = offererAddress;
     const offerItems = offer.map(mapInputItemToOfferItem);
@@ -434,15 +432,9 @@ export class Seaport {
         return this._getMessageToSign(orderParameters, resolvedCounter);
       },
       createOrder: async () => {
-        const signature = await this.signOrder(
-          orderParameters,
-          resolvedCounter,
-          offerer
-        );
-
         return {
           parameters: { ...orderParameters, counter: resolvedCounter },
-          signature,
+          signature: "0x",
         };
       },
     } as const;
@@ -453,10 +445,6 @@ export class Seaport {
       actions,
       executeAllActions: () =>
         executeAllActions(actions) as Promise<OrderWithCounter>,
-      orderParameters: {
-        parameters: { ...orderParameters, counter: resolvedCounter },
-        signature: "",
-      },
     };
   }
 
